@@ -1,0 +1,7 @@
+#run this from an interactive prompt
+$newPath= "$((Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).Path)"+’;D:\other\argali\currentversion\_ArgaliSRC’
+Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH –Value $newPath
+
+#$path/./argali /install 
+#modify service to run as a local or domain user that has "Logon as a Service" right assigned or local system must have "access to desktop" in services.msc
+Start-service argali
