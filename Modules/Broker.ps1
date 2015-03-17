@@ -1,9 +1,10 @@
 #KEEP THIS NEXT LINE, ONLY CHANGE IP:PORT, NO SPACES#
-#Broker=192.168.1.64:8880
-#IPPORT=192.168.1.64:8880
+#Broker=192.168.1.147:8880
+#IPPORT=192.168.1.147:8880
 #IPType=Standard
 
 cd $path
+
 switch -regex ($GET){
 
 	'/admin' 	{$global:response.ContentType = 'text/html' ; $global:message = $(gc $path/web/admin.html)}
@@ -17,7 +18,7 @@ switch -regex ($GET){
 						$global:message = $($post.register)
 					}
 				} 
-	default 	{	
+	'/api' 	{	
 					$PostModule = gc ./configs/module.cfg | ? {$_ -notmatch "#"}
 					foreach ($line in $PostModule) {
 				
@@ -28,7 +29,16 @@ switch -regex ($GET){
 						}		
 					}
 				}
+	default		{$codebase = $(("$get").replace("https://192.168.1.147:8880/",""))
+				switch -regex ($codebase){
+							
+						'.js'	{$global:response.ContentType = 'text/javascript'}
+						'.css'	{$global:response.ContentType = 'text/css'}
+						'.html'	{$global:response.ContentType = 'text/html'}
+
+					}
+					$global:message = $(gc $path/$codebase)
+				}
 }
 if (!$global:message){$global:message = "Invalid input, !message."}
-Get-Variable * | % {$("$($_.name)" + " = " + "$($_.value)")} >> ./logs\debugAgraliSubBroker.log	
-		
+Get-Variable * | % {$("$($_.name)" + " = " + "$($_.value)")} > ./logs\debugAgraliSubBroker.log	

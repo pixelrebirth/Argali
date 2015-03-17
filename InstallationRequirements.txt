@@ -1,7 +1,14 @@
-#run this from an interactive prompt
-$newPath= "$((Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).Path)"+’;D:\other\argali\currentversion\_ArgaliSRC’
-Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH –Value $newPath
-
-#$path/./argali /install 
-#modify service to run as a local or domain user that has "Logon as a Service" right assigned or local system must have "access to desktop" in services.msc
-Start-service argali
+Unzip the package to a web folder (ex. c:\argali will be used in this tutorial)
+Open powershell as an admin
+Browse to the _ArgaliSRC folder in c:\argali
+	.\Argali.exe install Argali powershell c:\argali\_ArgaliSRC\argali.ps1
+	.\Argali.exe set Argali objectname <domain\user> <password>
+	$newPath= "$((Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).Path)"+’;c:\argali\_ArgaliSRC’
+	Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH –Value $newPath
+	gci -recurse c:\argali | unblock-file
+restart powershell
+edit config files within c:\argali\configs to match you ip and port needs for the broker or module
+adjust the IPs and Ports in ../modules/argali.ps1 (or whatever modules you wish to have on this... this is where the multiple vertical and horizontal scaling comes in)
+	runas /user:"<domain\user>" powershell 
+	set-executionpolicy -executionpolicy bypass -scope currentuser -force
+start the Argali service

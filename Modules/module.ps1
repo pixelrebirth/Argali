@@ -1,6 +1,6 @@
 #KEEP THIS NEXT LINE, ONLY CHANGE IP:PORT, NO SPACES#
-#Broker=192.168.1.64:8880
-#IPPORT=192.168.1.64:8881
+#Broker=192.168.1.147:8880
+#IPPORT=192.168.1.147:8881
 #IPType=Standard
 
 #This code starts the runtime environment for the script code, so the modules and pre-requisites can be established in the service loop

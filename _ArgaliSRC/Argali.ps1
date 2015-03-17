@@ -85,7 +85,8 @@ Foreach ($module in $(gci ./modules/*.ps1)){
 	$IPType = (gc $module | ? {$_ -match "#IPType"}).replace("#IPType=","")
 	$IPPort = (gc $module | ? {$_ -match "#IPPORT"}).replace("#IPPORT=","")
 	$IPBroker = (gc $module | ? {$_ -match "#Broker"}).replace("#Broker=","")
-	Invoke-restmethod -uri https://$ipport/register -method post -body $("register=$($module.basename)" + ",$ipport,$iptype")
+	Invoke-restmethod -uri https://$IPBroker/register -method post -body $("register=$($module.basename)" + ",$ipport,$iptype")
+	$("register=$($module.basename)" + ",$ipport,$iptype") >> ./logs/register.log
 }
 	
 $error >> ./logs\debugAgraliError.log
