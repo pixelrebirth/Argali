@@ -1,0 +1,45 @@
+This line helps set an array, this is for consistency and is required
+This is the broker ipport to register the module ipport
+Module ipport that is autoregistered in the broker
+IPType, this is where a VIP would be configured
+
+Opens the path of the files
+
+Starts switch based on a regex match of the GET URI
+
+	#10 /admin - opens a web form used for demonstrations
+	/hello - opens a simple hello world page for testing quickly
+	/register - starts a script that will manage a POST request and enter the values into the ./configs/module.cfg file
+		Ensures that the registration post exists using the check-registration filter in the library
+			Splits the variable by the , and sets the var $splitModule
+			Gets the content of the config file minus any lines for the current module into a variable
+			Adds the current configuration of the module into the variable
+			Writes the config file to ./configs/module.cfg
+			Returns a message to the requester with the value of the registered line
+		End If
+	#20 End /register
+	/api - This is the heart of the broker, the piece that sends the request to the appropriate module based on the POST stream content module=""
+		This line gets the content of the module config
+		Foreach line in the module config check for match 
+
+			Split matched by , into hash
+			Sets IPPort for module being called (used in rest request)
+			Validates the the post.module matches a line in the config
+				Sets the Message (used for context response within Argali.ps1) to be a RESTful request to the module ipport with the remaining POST stream codeset and arg
+			End If
+		#30 End ForEach
+	End /api
+	default - this is the default behavior if there is not URI match
+		This takes the get stream and removes the known URI for use in folder browsing
+		Matches the filetype of the $Mime variable set previously to known mime types
+
+			.js mime type
+			.css mime type
+			.html mime type
+
+		#40 End Mime
+		Set the Message to the content of the $Mime file requested using the filetype stated above
+	End default
+End GET URI
+Send Invalid Input if Message null
+Variable debug to log file

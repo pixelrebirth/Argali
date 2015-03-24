@@ -1,0 +1,93 @@
+Opens the installation path of the Argali services
+Opens the parent folder where all other subfolders are
+
+Imports the Argali Library for common function use cross modules and brokers
+Sets the modulenum integer to 0 to classify variable for later use in the script
+
+Starts a foreach module in the module folder look and sets variable $module to be the current module file
+
+	Increases the $modulenum integer
+	#10
+	Imports the IP and Port number from the actual module files themselves, this allows for the file to be self setting and simple to install and change
+	Uses the Set-SSLCertificate function from the library to set an IP:Port SSL config to netsh
+
+	This block of code creates a new variable with name Listener<$modulenum> dynamically and places a .Net system.net.httplistener into the variable
+	Gets the dynamic variable Listener<$modulenum> and adds a prefix of https://$ipport
+
+	Starts the Listener<$moduleNum> dynamic variable
+
+	Sets the current thread number to 1, used later
+	#20 This is the maximum number of concurrent threads to spawn a module/broker on, this could be adjusted but I have found 1:1 with CPU -1 to be ideal
+
+	Sets path variable in order to pass it to a command block
+
+	This scriptblock is used later to call the code into the previously mentioned threads
+	Start codeblock
+		Set parameter order and variables
+		I must change current run location, since this code will be running in a new session
+
+		Imports the global function library
+		#30
+		Allows for SSL to be accepted from other modules using a function Set-Crypto in the library file
+
+		While forever
+
+			Garbage collection to clean up runspace
+
+			Opens the listener context, this will cause the session to pause until context is received
+			Once the context() method releases, the context.response will be sent to a seperate variable
+			This adjusts the reponse to have Argali headers
+			#40
+			The request is pulled from the context listener
+			InputStream (used for POST processing) is populated
+			ContentEncoding is populated from the request, this is the type of content received
+
+			Validate-Session is inactive, but will be used for session authentication and key handling
+
+			Sets the $get var to what the GET url is in the request
+			Sets the POST value to be the Get-POST (library) command intepretted version of the POST request content
+			Sets the output message to be Null to avoid issues in the looping
+			#50
+			Executes whatever code exists in the $module file
+
+			Sets the message buffer to be the message
+			Calculates the response buffer size based on the length of the content in message
+			Executes the reponse outstream write method to send back the content in the buffer stream from beginning to end
+
+			Closes the current response
+
+			Sets message to null again for cleanup
+			#60 Sets response to null for cleanup
+			Garbage collection (needs to run twice)
+			Formats and sends all current variables to log for debugging
+
+		End Loop
+	End Scriptblock
+
+	Start a loop to execute as many times as there are threads in $maxThreads set previously
+
+	Starts a new powershell session
+	#70 Adds $scriptblock to execute in that session
+	Sends the currently started listener using the dynamic variable as a param to scriptblock (created previous to the scriptblock, without a dynamic variable we would have to hardcode this.. this allows the code to run for as many modules exist in the module folder)
+	Sends the $path as a parameter
+	Sends the current $module as a parameter
+	Starts the threads
+	Advances the thread count to continue look until all have been done
+
+	Garbage collection
+	End thread loop
+
+#80 End Module loop
+
+Allows SSL for module connection (previously set in scriptblock, which is not in this scope)
+For each module (this is meant for dynamically configuring the configs/module.cfg file)
+	Sets IPType based on module code file
+	Sets IPPort based on module code file
+	Sets IPBroker which will handle this registration
+	Invoke-restmethod to the configured IPBroker with a POST message meant specifically to register modules automatically and remove unwanted entries
+	Sends registration to a file for tracking
+End registration loop
+#90
+Send all errors to a debug log
+Send all variables to a debug log
+Keep service open forever and output errors continuously 

@@ -2,7 +2,7 @@ cd ($env:path.split(";") | ? {$_ -match "argali"})
 cd ..
 
 import-module ./libraries/Argali_library.psm1
-$moduleNum = 0
+[int]$moduleNum = 0
 
 Foreach ($module in $(gci ./modules/*.ps1)){
 	
@@ -12,8 +12,8 @@ Foreach ($module in $(gci ./modules/*.ps1)){
 	Set-SSLCertificate $IPPort
 
 	new-variable Listener$($moduleNum) -value (New-Object System.Net.HttpListener)
-	$(get-variable Listener$($moduleNum)).value.Prefixes.Add("https://$IPPORT/") # Must exactly match the netsh POST above
-
+	$(get-variable Listener$($moduleNum)).value.Prefixes.Add("https://$IPPORT/") 
+	
 	$(get-variable Listener$($moduleNum)).value.Start()
 
 	$Thread = 1
@@ -42,7 +42,7 @@ Foreach ($module in $(gci ./modules/*.ps1)){
 			$InputStream = $Request.InputStream
 			$ContentEncoding = $Request.ContentEncoding
 			
-			#Validate-Session $($request | select headers)
+			#Check-Session $($request | select headers)
 			
 			$GET = $Request.Url
 			$POST = Get-POST -InputStream $InputStream -ContentEncoding $ContentEncoding
@@ -79,7 +79,6 @@ Foreach ($module in $(gci ./modules/*.ps1)){
 	
 }
 
-#This is the self-register part of Argali, all modules get registered based on the input in each module
 Set-Crypto | out-null
 Foreach ($module in $(gci ./modules/*.ps1)){
 	$IPType = (gc $module | ? {$_ -match "#IPType"}).replace("#IPType=","")
@@ -91,4 +90,4 @@ Foreach ($module in $(gci ./modules/*.ps1)){
 	
 $error >> ./logs\debugAgraliError.log
 Get-Variable * | % {$("$($_.name)" + " = " + "$($_.value)")} > ./logs\debugAgraliOut.log
-while ($true) {$pipeline.streams.error >> ./logs\debugAgraliError.log ; start-sleep 30}
+while ($true) {$pipeline.streams.error > ./logs\debugAgraliError.log ; start-sleep 30}
