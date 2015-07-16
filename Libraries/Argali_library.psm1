@@ -54,6 +54,7 @@ function Get-POST {
 	{
 		$Literal_Post = $PostStream
 		$PostStream = $PostStream.Replace("+"," ")
+		$PostStream = $PostStream.Replace("%40","@")
 		$PostStream = $PostStream.Replace("%20"," ")
 		$PostStream = $PostStream.Replace("%21","!")
 		$PostStream = $PostStream.Replace('%22','"')
