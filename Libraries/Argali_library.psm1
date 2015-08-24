@@ -54,7 +54,6 @@ function Get-POST {
 	{
 		$Literal_Post = $PostStream
 		$PostStream = $PostStream.Replace("+"," ")
-		$PostStream = $PostStream.Replace("%40","@")
 		$PostStream = $PostStream.Replace("%20"," ")
 		$PostStream = $PostStream.Replace("%21","!")
 		$PostStream = $PostStream.Replace('%22','"')
@@ -135,5 +134,4 @@ filter Check-Registration {
 
 	param ($check)
 	$check -match "\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b" -and "\w\,*:\w\,\w"
-
 }

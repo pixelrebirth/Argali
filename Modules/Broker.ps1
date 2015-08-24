@@ -1,13 +1,12 @@
 #KEEP THIS NEXT LINE, ONLY CHANGE IP:PORT, NO SPACES#
-#Broker=192.168.1.147:8880
-#IPPORT=192.168.1.147:8880
+#Broker=192.168.1.240:8880
+#IPPORT=192.168.1.240:8880
 #IPType=Standard
 
 cd $path
 
 switch -regex ($GET){
 
-	'/admin' 	{$global:response.ContentType = 'text/html' ; $global:message = $(gc $path/web/admin.html)}
 	'/hello' 	{$global:response.ContentType = 'text/html' ; $global:message = "world"};
 	'/register'	{
 					if (check-registration $($post.register)){
@@ -29,8 +28,11 @@ switch -regex ($GET){
 						}		
 					}
 				}
+	'/angular'	{
+					$global:response.ContentType = 'text/javascript' ; $global:message = $angularCache
+				}
 	default		{
-					$Mime = $(("$get").replace("https://192.168.1.147:8880/",""))
+					$Mime = $(("$get").replace("https://192.168.1.240:8880/",""))
 					switch -regex ($Mime){
 								
 							'.js'	{$global:response.ContentType = 'text/javascript'}
@@ -38,7 +40,7 @@ switch -regex ($GET){
 							'.html'	{$global:response.ContentType = 'text/html'}
 
 					}
-					$global:message = $(gc $path/$Mime)
+					$global:message = $(gc -raw -path $path/web/$Mime -encoding utf8)
 				}
 }
 if (!$global:message){$global:message = "Invalid input, !message."}

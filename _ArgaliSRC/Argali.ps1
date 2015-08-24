@@ -29,6 +29,7 @@ Foreach ($module in $(gci ./modules/*.ps1)){
 		import-module ./libraries/Argali_library.psm1
 
 		Set-Crypto | out-null
+		$angularCache =  $(gc -raw -path $path/web/angular/angular.js -encoding utf8)
 		
 		while ($true){
 			
