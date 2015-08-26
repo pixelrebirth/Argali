@@ -29,7 +29,7 @@ Foreach ($module in $(gci ./modules/*.ps1)){
 		import-module ./libraries/Argali_library.psm1
 
 		Set-Crypto | out-null
-		$angularCache =  $(gc -raw -path $path/web/angular/angular.js -encoding utf8)
+		$angularCache =  $(gc -raw -path $path/web/js/angular.js -encoding utf8)
 		
 		while ($true){
 			
@@ -45,13 +45,15 @@ Foreach ($module in $(gci ./modules/*.ps1)){
 			
 			#Check-Session $($request | select headers)
 			
+			$RawMime = $request.RawUrl
 			$GET = $Request.Url
 			$POST = Get-POST -InputStream $InputStream -ContentEncoding $ContentEncoding
 			$message = $null
 			
 			& $module
 						
-			[byte[]] $buffer = [System.Text.Encoding]::UTF8.GetBytes($message)
+			if ($message -isnot [byte[]]){[byte[]] $buffer = [System.Text.Encoding]::UTF8.GetBytes($message)}
+			if ($message -is [byte[]]){[byte[]] $buffer = $message}
 			$response.ContentLength64 = $buffer.length
 			$response.OutputStream.Write($buffer, 0, $buffer.length)
 

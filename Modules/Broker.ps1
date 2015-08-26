@@ -32,15 +32,16 @@ switch -regex ($GET){
 					$global:response.ContentType = 'text/javascript' ; $global:message = $angularCache
 				}
 	default		{
-					$Mime = $(("$get").replace("https://192.168.1.240:8880/",""))
-					switch -regex ($Mime){
+					switch -regex ($RawMime){
 								
 							'.js'	{$global:response.ContentType = 'text/javascript'}
 							'.css'	{$global:response.ContentType = 'text/css'}
 							'.html'	{$global:response.ContentType = 'text/html'}
+							'.jpg'	{$global:response.ContentType = 'image/jpeg'}
+							'.png'	{$global:response.ContentType = 'image/png'}
 
 					}
-					$global:message = $(gc -raw -path $path/web/$Mime -encoding utf8)
+					$global:message = [byte[]] $(Get-ContentBytes -path "$path/web$RawMime")
 				}
 }
 if (!$global:message){$global:message = "Invalid input, !message."}
