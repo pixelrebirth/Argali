@@ -12,12 +12,12 @@ Foreach ($module in $(gci ./modules/*.ps1)){
 	Set-SSLCertificate $IPPort
 
 	new-variable Listener$($moduleNum) -value (New-Object System.Net.HttpListener)
-	$(get-variable Listener$($moduleNum)).value.Prefixes.Add("https://$IPPORT/") 
+	$(get-variable Listener$($moduleNum)).value.Prefixes.Add("http://$IPPORT/") 
 	
 	$(get-variable Listener$($moduleNum)).value.Start()
 
 	$Thread = 1
-	$MaxThread = ($(Get-WmiObject win32_computersystem).NumberOfLogicalProcessors)
+	$MaxThread = ($(Get-WmiObject win32_computersystem).NumberOfLogicalProcessors) * 2
 
 	$path = $((get-location).path)
 	
@@ -29,6 +29,7 @@ Foreach ($module in $(gci ./modules/*.ps1)){
 		import-module ./libraries/Argali_library.psm1
 
 		Set-Crypto | out-null
+
 		$angularCache =  $(gc -raw -path $path/web/js/angular.js -encoding utf8)
 		
 		while ($true){

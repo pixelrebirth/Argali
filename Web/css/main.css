@@ -1,0 +1,343 @@
+
+
+css
+
+main.css
+
+img
+
+program-or-be-programmed.jpg
+
+the-book-of-trees.jpg
+
+index.html
+
+js
+
+app.js
+
+controllers
+
+MainController.js
+
+shared
+
+angular-mocks.js
+
+angular-route.min.js
+
+angular.min.js
+html, body {
+ margin: 0;
+ padding: 0;
+ font-family: 'Roboto', sans-serif;
+ width:100%;
+}
+
+.header {
+ padding: 15px;
+}
+
+.header img {
+   display: inline-block;
+}
+
+.header h1 {
+   display: inline-block;
+}
+
+.main {
+ background-color: #f2f2f2 ;
+ padding: 40px 0;
+}
+
+.main h1 {
+ color: #F65A5B ;
+ font-size: 64px;
+ margin: 0 0 80px 0;
+ padding: 20px 0;
+   line-height: 60px;
+   width: 50%;
+}
+
+.main h2 {
+ background-color: #DDDDDD ;
+ color: #999999 ;
+ font-size: 20px;
+ margin: 0 0 40px 0;
+ padding: 20px 0;
+}
+
+.thumbnail {
+ border: 0px;
+ position: relative;
+ padding: 50px;
+   border-radius: 0;
+   margin-bottom:50px;
+}
+
+.thumbnail img {
+   margin-top: 10px;
+ margin-bottom: 30px;
+ max-width: 100%;
+}
+
+.title,
+.date {
+ color: #444;
+ margin: 0;
+ font-size: 18px;
+   font-weight: 800;
+}
+
+.date {
+   color: #a3a3a3 ;
+   font-size: 14px;
+   font-weight: 200;
+}
+
+.price {
+ background-color: #39D1B4 ;
+ color: #fff;
+ font-size: 18px;
+   border-radius: 50%;
+   box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+   font-weight: 200;
+   height: 80px;
+   line-height: 80px;
+   text-align: center;
+   width: 80px;
+ position: absolute;
+ top: -40px;
+ right: 20px;
+}
+
+.rating {
+ text-align: right;
+ -webkit-user-select: none;
+    -moz-user-select: none;
+     -ms-user-select: none;
+ margin: 30px 0 -30px 20px;
+}
+
+.likes,
+.dislikes {
+   background: #F65A5B ;
+ color: #fff;
+ cursor: pointer;
+ display: inline-block;
+ font-size: 15px;
+   line-height: 40px;
+   min-width: 40px;
+   height: 40px;
+   border-radius: 50%;
+ margin: 0 -30px 0 40px;
+   text-align: center;
+   font-weight: 200;
+   box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+   transition: background 500ms;
+}
+
+.likes:hover,
+.dislikes:hover {
+ color: #F65A5B ;
+   background: rgba(246, 90, 91, 0.25);
+   transition: background 500ms;
+}
+
+.footer {
+ text-align: center;
+ margin: 80px 0 110px;
+}
+
+.footer h2 {
+ font-size: 24px;
+ margin-bottom: 25px;
+}
+
+.footer img {
+   margin: 0 10px;
+}
+Open
+index.html
+MainController.js
+
+<div class="main" ng-controller="MainController">
+1
+<!doctype html>
+2
+<html>
+3
+  <head>
+4
+      <link href="https://s3.amazonaws.com/codecademy-content/projects/bootstrap.min.css" rel="stylesheet" />
+5
+    <link href='https://fonts.googleapis.com/css?family=Roboto:500,300,700,400' rel='stylesheet' type='text/css'>
+6
+    <link href="css/main.css" rel="stylesheet" />
+7
+​
+8
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular.min.js"></script>
+9
+  </head>
+10
+  <body ng-app="myApp">
+11
+    <div class="header">
+12
+      <div class="container">
+13
+        <h1>Book End</h1>
+14
+      </div>
+15
+    </div>
+16
+​
+17
+    <div class="main" ng-controller="MainController">
+18
+      <div class="container">
+19
+​
+20
+        <h1>{{ title }}</h1>
+21
+        <h2>{{ promo }}</h2>
+22
+        <div ng-repeat="product in products" class="col-md-6"> 
+23
+          <div class="thumbnail"> 
+24
+            <img ng-src="{{ product.cover }}"> 
+25
+            <p class="title">{{ product.name }}</p> 
+26
+            <p class="price">{{ product.price | currency }}</p> 
+27
+            <p class="date">{{ product.pubdate | date }}</p>
+28
+            <div class="rating"> 
+29
+            <p class="likes"> {{ product.likes }} </p> 
+30
+          </div>
+31
+          </div> 
+32
+        </div>
+33
+      </div>
+34
+    </div>
+35
+​
+36
+    <div class="footer">
+37
+      <div class="container">
+38
+        <h2>Available for iPhone and Android.</h2>
+39
+        <img src="https://s3.amazonaws.com/codecademy-content/projects/shutterbugg/app-store.png" width="120px" />
+40
+        <img src="https://s3.amazonaws.com/codecademy-content/projects/shutterbugg/google-play.png" width="110px" />
+41
+      </div>
+42
+    </div>
+43
+​
+44
+​
+45
+    <!-- Modules -->
+46
+    <script src="js/app.js"></script>
+47
+​
+48
+    <!-- Controllers -->
+49
+    <script src="js/controllers/MainController.js"></script>
+50
+  </body>
+51
+</html>
+Run
+
+https://localhost:8000/
+
+So far we've made a static AngularJS app by adding properties in the controller and displaying them in the view. AngularJS is a framework for building dynamic web apps, so let's start to make this app interactive.
+1.
+In the controller in the $scope.products array, add a new property named likes to each element. Set all likes properties to 0.
+2.
+In the view under <p class="date">, type in a rating element:
+
+<div class="rating"> 
+  <p class="likes">+ </p> 
+</div>
+
+Inside <p class="likes">, display a product's likes using an expression.
+3.
+Back in the controller after $scope.products, attach a new property to $scope named plusOne. Set it equal to function. Type in the contents exactly as you see here:
+
+function(index) { 
+  $scope.products[index].likes += 1; 
+};
+
+4.
+In the view modify <p class="likes"> to look like this:
+
+<p class="likes" ng-click="plusOne($index)">
+
+View the AngularJS app in the browser. Click on the +0 in each product tile.
+Report a Bug
+If you see a bug, please report it using the form below.
+
+I don't understand this error message
+
+There's a problem with the interface
+
+There's something wrong with the instructions
+
+Other
+
+Please describe your problem.
+SUBMIT
+Report a Bug
+Learn
+Instructions
+Learn AngularJS - Your First App
+1
+Hello AngularJS I
+2
+Hello AngularJS II
+3
+Workflow
+4
+Filters I
+5
+Filters II
+6
+ng-repeat I
+7
+ng-repeat II
+8
+Directives
+9
+ng-click I
+10
+ng-click II
+11
+Generalizations
+View All Exercises
+Back
+30%
+Next
+Get Help
+
+ng-click I
+Saving workspace
+

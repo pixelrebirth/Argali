@@ -1,3 +1,3 @@
 $var = $post.arg1
-$xml = gci $var | convertto-xml
-$global:message = $xml.outerxml
+$content = gci $var -recurse | select name | convertto-json
+$global:message = $content

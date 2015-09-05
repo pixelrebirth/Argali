@@ -24,7 +24,8 @@ switch -regex ($GET){
 						$config = $line.split(",")
 						$IPPortModule =  "$($config[1])"
 						if ($($post.module) -match "$($config[0])") {
-							$global:message = (invoke-restmethod "https://$IPPORTModule/" -method POST -body "codeset=$($POST.codeset)&arg1=$($POST.arg1)" -timeoutsec 1000).outerxml
+							$global:message = invoke-restmethod "http://$IPPORTModule/" -method POST -body "codeset=$($POST.codeset)&arg1=$($POST.arg1)" -timeoutsec 1000 | convertto-json
+							$global:response.ContentType = 'application/json'
 						}		
 					}
 				}
@@ -39,7 +40,7 @@ switch -regex ($GET){
 							'.html'	{$global:response.ContentType = 'text/html'}
 							'.jpg'	{$global:response.ContentType = 'image/jpeg'}
 							'.png'	{$global:response.ContentType = 'image/png'}
-
+							'.json'	{$global:response.ContentType = 'application/json'}
 					}
 					$global:message = [byte[]] $(Get-ContentBytes -path "$path/web$RawMime")
 				}
