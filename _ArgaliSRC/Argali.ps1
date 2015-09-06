@@ -18,9 +18,9 @@ Foreach ($module in $AllModules){
 	$(get-variable Listener$($moduleNum)).value.Start()
 
 	$Thread = 1
-	# $MaxThread = ($(Get-WmiObject win32_computersystem).NumberOfLogicalProcessors) * 2
-	$MaxThread = ($(Get-WmiObject win32_computersystem).NumberOfLogicalProcessors) / $($AllModules.count)
-	if ($MaxThread -le 1){$MaxThread = 1}
+	$MaxThread = ($(Get-WmiObject win32_computersystem).NumberOfLogicalProcessors)
+	# $MaxThread = ($(Get-WmiObject win32_computersystem).NumberOfLogicalProcessors) / $($AllModules.count)
+	# if ($MaxThread -le 1){$MaxThread = 1}
 
 	$path = $((get-location).path)
 	
@@ -63,6 +63,8 @@ Foreach ($module in $AllModules){
 			
 			$message = $null
 			$Response = $null
+
+			[System.GC]::Collect()
 
 			# Get-Variable * | % {$("$($_.name)" + " = " + "$($_.value)")} > ./logs\debugAgraliIn.log
 			
