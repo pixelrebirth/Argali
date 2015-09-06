@@ -1,3 +1,3 @@
 $var = $post.arg1
-$content = gci $var -recurse | select name | convertto-json
+$content = gci $var | select name,mode,attributes | convertto-json
 $global:message = $content

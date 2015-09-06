@@ -3,8 +3,9 @@ cd ..
 
 import-module ./libraries/Argali_library.psm1
 [int]$moduleNum = 0
+$AllModules = $(gci ./modules/*.ps1)
 
-Foreach ($module in $(gci ./modules/*.ps1)){
+Foreach ($module in $AllModules){
 	
 	$moduleNum++
 	
@@ -17,7 +18,9 @@ Foreach ($module in $(gci ./modules/*.ps1)){
 	$(get-variable Listener$($moduleNum)).value.Start()
 
 	$Thread = 1
-	$MaxThread = ($(Get-WmiObject win32_computersystem).NumberOfLogicalProcessors) * 2
+	# $MaxThread = ($(Get-WmiObject win32_computersystem).NumberOfLogicalProcessors) * 2
+	$MaxThread = ($(Get-WmiObject win32_computersystem).NumberOfLogicalProcessors) / $($AllModules.count)
+	if ($MaxThread -le 1){$MaxThread = 1}
 
 	$path = $((get-location).path)
 	
@@ -29,8 +32,6 @@ Foreach ($module in $(gci ./modules/*.ps1)){
 		import-module ./libraries/Argali_library.psm1
 
 		Set-Crypto | out-null
-
-		$angularCache =  $(gc -raw -path $path/web/js/angular.js -encoding utf8)
 		
 		while ($true){
 			
@@ -62,8 +63,8 @@ Foreach ($module in $(gci ./modules/*.ps1)){
 			
 			$message = $null
 			$Response = $null
-			[System.GC]::Collect()
-			Get-Variable * | % {$("$($_.name)" + " = " + "$($_.value)")} > ./logs\debugAgraliIn.log
+
+			# Get-Variable * | % {$("$($_.name)" + " = " + "$($_.value)")} > ./logs\debugAgraliIn.log
 			
 		}
 	}
@@ -89,9 +90,12 @@ Foreach ($module in $(gci ./modules/*.ps1)){
 	$IPPort = (gc $module | ? {$_ -match "#IPPORT"}).replace("#IPPORT=","")
 	$IPBroker = (gc $module | ? {$_ -match "#Broker"}).replace("#Broker=","")
 	Invoke-restmethod -uri https://$IPBroker/register -method post -body $("register=$($module.basename)" + ",$ipport,$iptype")
-	$("register=$($module.basename)" + ",$ipport,$iptype") >> ./logs/register.log
+	# $("register=$($module.basename)" + ",$ipport,$iptype") >> ./logs/register.log
 }
 	
-$error >> ./logs\debugAgraliError.log
-Get-Variable * | % {$("$($_.name)" + " = " + "$($_.value)")} > ./logs\debugAgraliOut.log
-while ($true) {$pipeline.streams.error > ./logs\debugAgraliError.log ; start-sleep 30}
+# $error >> ./logs\debugAgraliError.log
+# Get-Variable * | % {$("$($_.name)" + " = " + "$($_.value)")} > ./logs\debugAgraliOut.log
+while ($true) {
+#	$pipeline.streams.error > ./logs\debugAgraliError.log
+	start-sleep 30
+}

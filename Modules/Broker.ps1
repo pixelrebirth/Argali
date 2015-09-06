@@ -29,9 +29,6 @@ switch -regex ($GET){
 						}		
 					}
 				}
-	'/angular'	{
-					$global:response.ContentType = 'text/javascript' ; $global:message = $angularCache
-				}
 	default		{
 					switch -regex ($RawMime){
 								
@@ -41,9 +38,10 @@ switch -regex ($GET){
 							'.jpg'	{$global:response.ContentType = 'image/jpeg'}
 							'.png'	{$global:response.ContentType = 'image/png'}
 							'.json'	{$global:response.ContentType = 'application/json'}
+
 					}
 					$global:message = [byte[]] $(Get-ContentBytes -path "$path/web$RawMime")
 				}
 }
 if (!$global:message){$global:message = "Invalid input, !message."}
-Get-Variable * | % {$("$($_.name)" + " = " + "$($_.value)")} > ./logs\debugAgraliSubBroker.log	
+# Get-Variable * | % {$("$($_.name)" + " = " + "$($_.value)")} > ./logs\debugAgraliSubBroker.log	
