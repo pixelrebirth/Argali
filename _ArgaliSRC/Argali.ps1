@@ -13,14 +13,12 @@ Foreach ($module in $AllModules){
 	Set-SSLCertificate $IPPort
 
 	new-variable Listener$($moduleNum) -value (New-Object System.Net.HttpListener)
-	$(get-variable Listener$($moduleNum)).value.Prefixes.Add("http://$IPPORT/") 
+	$(get-variable Listener$($moduleNum)).value.Prefixes.Add("https://$IPPORT/") 
 	
 	$(get-variable Listener$($moduleNum)).value.Start()
 
 	$Thread = 1
 	$MaxThread = ($(Get-WmiObject win32_computersystem).NumberOfLogicalProcessors)
-	# $MaxThread = ($(Get-WmiObject win32_computersystem).NumberOfLogicalProcessors) / $($AllModules.count)
-	# if ($MaxThread -le 1){$MaxThread = 1}
 
 	$path = $((get-location).path)
 	
@@ -86,6 +84,7 @@ Foreach ($module in $AllModules){
 	
 }
 
+start-sleep 10
 Set-Crypto | out-null
 Foreach ($module in $(gci ./modules/*.ps1)){
 	$IPType = (gc $module | ? {$_ -match "#IPType"}).replace("#IPType=","")
