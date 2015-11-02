@@ -45,6 +45,7 @@ Function New-Password {
     for ($x = 0; $x -lt $Length; $x++) {
         $result += $set | Get-Random
     }
+    $result = $result + "!P"
     return $result
 }
 
@@ -92,7 +93,8 @@ function Add-NewUserToAdminGroup {
 
 if (-not (Use-RunAs -check)){"Please run as administrator..." ; read-host Exit; break}
 
-$null > ./configs/module.cfg
+"#This line is intentional" > ./configs/module.cfg
+"#This line is also intentional" >> ./configs/module.cfg
 stop-service argali -confirm:$false
 
 .\_ArgaliSRC\Argali.exe install Argali powershell -executionpolicy bypass "$pwd\_ArgaliSRC\argali.ps1"
@@ -125,9 +127,9 @@ if (!$broker){
     $brokerScript = $brokerScript.Replace('IPPORT=<ip>:<port>',"IPPORT=$($brokerIP):$($brokerPort)")
     $brokerScript > ./modules/broker.ps1
 
-    $adminPage = gc ./install/admin.html
-    $adminPage = $adminPage.replace('action="https://<IP>:<PORT>/api">',"action=`"https://$($brokerIP):$($brokerPort)/api`">")
-    $adminPage > ./web/admin.html
+    $adminPage = gc ./install/AdminController.js
+    $adminPage = $adminPage.replace('<IP>:<PORT>',"$($brokerIP):$($brokerPort)")
+    $adminPage > ./web/js/AdminController.js
 }
 if (!$module){
     [ipaddress]$moduleIP = read-host "What is the IP of the module server (could be this server)"
