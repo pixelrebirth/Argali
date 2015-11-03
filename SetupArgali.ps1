@@ -111,39 +111,31 @@ if (-not ($env:path -match "Argali")){
 }
 gci -recurse $pwd | unblock-file
 
-$broker = "notEmpty"
-$module = "notEmpty"
-while ($broker -ne "" -OR $module -ne ""){
-    $broker = read-host Press Enter to install the broker or type anything and enter to bypass broker install
-    $module = read-host Press Enter to install a module or type anything and enter to bypass module install
-}
+$computer = hostname
 
-[ipaddress]$brokerIP = read-host "What is the IP of the broker server (could be this server)"
-[int]$brokerPort = read-host "What is the listening broker port number"
+$brokerIP = (Test-Connection $computer -count 1).ipv4address.ipaddresstostring
+$brokerPort = 443
 
-if (!$broker){
-    $brokerScript = gc ./install/broker.ps1
-    $brokerScript = $brokerScript.Replace('Broker=<ip>:<port>',"Broker=$($brokerIP):$($brokerPort)")
-    $brokerScript = $brokerScript.Replace('IPPORT=<ip>:<port>',"IPPORT=$($brokerIP):$($brokerPort)")
-    $brokerScript > ./modules/broker.ps1
+$moduleIP = $brokerIP
+$modulePort = 9000
 
-    $adminPage = gc ./install/AdminController.js
-    $adminPage = $adminPage.replace('<IP>:<PORT>',"$($brokerIP):$($brokerPort)")
-    $adminPage > ./web/js/AdminController.js
-}
-if (!$module){
-    [ipaddress]$moduleIP = read-host "What is the IP of the module server (could be this server)"
-    [int]$modulePort = read-host "What is the listening module port number"
+$brokerScript = gc ./install/broker.ps1
+$brokerScript = $brokerScript.Replace('Broker=<ip>:<port>',"Broker=$($brokerIP):$($brokerPort)")
+$brokerScript = $brokerScript.Replace('IPPORT=<ip>:<port>',"IPPORT=$($brokerIP):$($brokerPort)")
+$brokerScript > ./modules/broker.ps1
 
-    $moduleScript = gc ./install/module.ps1
-    $moduleScript = $moduleScript.Replace('Broker=<ip>:<port>',"Broker=$($brokerIP):$($brokerPort)")
-    $moduleScript = $moduleScript.Replace('IPPORT=<ip>:<port>',"IPPORT=$($moduleIP):$($modulePort)")
-    $moduleName = read-host what is the module name
-    $moduleScript > $("./modules/$moduleName" + ".ps1")
-}
+$adminPage = gc ./install/AdminController.js
+$adminPage = $adminPage.replace('<ip>:<port>',"$($brokerIP):$($brokerPort)")
+$adminPage > ./web/js/AdminController.js
+
+$moduleScript = gc ./install/module.ps1
+$moduleScript = $moduleScript.Replace('Broker=<ip>:<port>',"Broker=$($brokerIP):$($brokerPort)")
+$moduleScript = $moduleScript.Replace('IPPORT=<ip>:<port>',"IPPORT=$($moduleIP):$($modulePort)")
+$moduleName = "POSH"
+$moduleScript > $("./modules/$moduleName" + ".ps1")
 
 read-host Close all powershell and cmd sessions and start Argali service
 
-get-service Argali | start-service -confirm:$false
 get-process *cmd* | stop-process -force
+restart-service Argali 
 get-process *powershell* | stop-process -force
