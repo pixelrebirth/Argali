@@ -91,11 +91,13 @@ function Add-NewUserToAdminGroup {
     $group.add("WinNT://$username,user")
 }
 
+$erroractionpreference = 0
 if (-not (Use-RunAs -check)){"Please run as administrator..." ; read-host Exit; break}
 
 "#This line is intentional" > ./configs/module.cfg
 "#This line is also intentional" >> ./configs/module.cfg
 stop-service argali -confirm:$false
+mkdir $pwd\modules
 
 .\_ArgaliSRC\Argali.exe install Argali powershell -executionpolicy bypass "$pwd\_ArgaliSRC\argali.ps1"
 
@@ -105,8 +107,10 @@ Add-NewUserToAdminGroup ArgaliSVC $password
 Grant-LogOnAsService ArgaliSVC
 Set-LocalServiceAcctCreds Argali ArgaliSVC $password
 
-if (-not ($env:path -match "Argali")){
-    $newPath= $((Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).Path)+";$pwd\_ArgaliSRC"
+$currentPath= $((Get-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH).Path)
+
+if (-not ($currentPath -match "Argali")){
+    $newPath = "$currentPath" + ";$pwd\_ArgaliSRC"
     Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Environment' -Name PATH -Value $newPath
 }
 gci -recurse $pwd | unblock-file
