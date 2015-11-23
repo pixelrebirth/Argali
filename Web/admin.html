@@ -10,6 +10,8 @@
   <body ng-app="app">
   	<div class="main" ng-controller="AdminController" class="container">
 	    <h2>API Test Page</h2>
+          <input type="text" ng-model="datacenter" ng-required="false">
+          <label>Datacenter</label><br>
           <input type="text" ng-model="module" ng-required="true">
           <label>Module</label><br>
           <input type="text" ng-model="codeset" ng-required="true">

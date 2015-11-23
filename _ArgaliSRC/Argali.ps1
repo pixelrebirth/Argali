@@ -50,7 +50,7 @@ Foreach ($module in $AllModules){
 			$POST = Get-POST -InputStream $InputStream -ContentEncoding $ContentEncoding
 			$message = $null
 			
-			& $module
+			. $module
 						
 			if ($message -isnot [byte[]]){[byte[]] $buffer = [System.Text.Encoding]::UTF8.GetBytes($message)}
 			if ($message -is [byte[]]){[byte[]] $buffer = $message}
