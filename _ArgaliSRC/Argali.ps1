@@ -62,10 +62,7 @@ Foreach ($module in $AllModules){
 			$message = $null
 			$Response = $null
 
-			[System.GC]::Collect()
-
-			# Get-Variable * | % {$("$($_.name)" + " = " + "$($_.value)")} > ./logs\debugAgraliIn.log
-			
+			[System.GC]::Collect()			
 		}
 	}
 		
@@ -91,12 +88,8 @@ Foreach ($module in $(gci ./modules/*.ps1)){
 	$IPPort = (gc $module | ? {$_ -match "#IPPORT"}).replace("#IPPORT=","")
 	$IPBroker = (gc $module | ? {$_ -match "#Broker"}).replace("#Broker=","")
 	Invoke-restmethod -uri https://$IPBroker/register -method post -body $("register=$($module.basename)" + ",$ipport,$iptype")
-	# $("register=$($module.basename)" + ",$ipport,$iptype") >> ./logs/register.log
 }
 	
-# $error >> ./logs\debugAgraliError.log
-# Get-Variable * | % {$("$($_.name)" + " = " + "$($_.value)")} > ./logs\debugAgraliOut.log
 while ($true) {
-#	$pipeline.streams.error > ./logs\debugAgraliError.log
 	start-sleep 30
 }
