@@ -18,11 +18,12 @@
           <label>Codeset</label><br>
           <input type="text" ng-model="arg1" ng-required="false">
           <label>Argument</label><br>
-          <div ng-repeat="item in json.value">
-            <br>
-            {{item}}
-          </div><br>
-          {{ test.value }}
-      <div><button class="btn btn-primary" ng-click="loadJson()">LoadContent</button></div>
+          <div>
+            <button class="btn btn-primary" ng-click="loadJson()">LoadContent</button>
+            <button class="btn btn-secondary" ng-click="reloadView()">ReloadView</button>
+          </div>
+          <div ng-repeat="item in scriptStream.output">
+            {{ item }}
+          </div>
   	</div>
   </body>
