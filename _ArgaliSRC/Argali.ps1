@@ -1,3 +1,5 @@
+$ErrorActionPreference = 0
+
 cd ($env:path.split(";") | ? {$_ -match "argali"})
 cd ..
 
