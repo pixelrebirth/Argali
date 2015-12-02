@@ -21,7 +21,7 @@
           <div>
             <button class="btn btn-primary" ng-click="loadJson()">LoadContent</button>
           </div>
-          <div ng-repeat="item in scriptStream.output">
+          <div ng-repeat="item in scriptStream | divideByAwesome track by $index ">
             {{ item }}
           </div>
   	</div>

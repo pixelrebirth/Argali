@@ -142,3 +142,13 @@ function Get-ContentBytes {
 	return $FileContent
 
 }
+
+function ConvertTo-ElasticJson {
+	param ($inputArray)
+	$outputArray = @()
+	foreach ($input in $inputArray){
+		$input = $input.Replace("\","\\")
+		$outputArray += $input
+	}
+	return $outputArray
+}
