@@ -1,3 +1,4 @@
 {
+	"esServer": "http://es.pixelrebirth.local:9200"
 	"mixJobs": "argali/mixJobs"
 }

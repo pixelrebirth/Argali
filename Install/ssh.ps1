@@ -1,6 +1,6 @@
 #KEEP THIS NEXT LINE, ONLY CHANGE IP:PORT, NO SPACES#
-#Broker=192.168.1.245:443
-#IPPORT=192.168.1.245:9001
+#Broker=<ip>:<port>
+#IPPORT=<ip>:<port>
 #IPType=Standard
 
 $foldername = $MyInvocation.MyCommand.Name.split(".")[0]
