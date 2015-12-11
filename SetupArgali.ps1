@@ -123,20 +123,23 @@ $brokerPort = 443
 $moduleIP = $brokerIP
 $modulePort = 9000
 
-$brokerScript = gc ./install/broker.ps1
-$brokerScript = $brokerScript.Replace('Broker=<ip>:<port>',"Broker=$($brokerIP):$($brokerPort)")
-$brokerScript = $brokerScript.Replace('IPPORT=<ip>:<port>',"IPPORT=$($brokerIP):$($brokerPort)")
-$brokerScript > ./modules/broker.ps1
-
 $adminPage = gc ./install/AdminController.js
 $adminPage = $adminPage.replace('<ip>:<port>',"$($brokerIP):$($brokerPort)")
 $adminPage > ./web/js/AdminController.js
 
-$moduleScript = gc ./install/module.ps1
-$moduleScript = $moduleScript.Replace('Broker=<ip>:<port>',"Broker=$($brokerIP):$($brokerPort)")
-$moduleScript = $moduleScript.Replace('IPPORT=<ip>:<port>',"IPPORT=$($moduleIP):$($modulePort)")
-$moduleName = "POSH"
-$moduleScript > $("./modules/$moduleName" + ".ps1")
+foreach ($moduleFile in $(gci ./install/*.ps1)){
+    $moduleScript = gc $moduleFile
+    $moduleScript = $moduleScript.Replace('Broker=<ip>:<port>',"Broker=$($brokerIP):$($brokerPort)")
+    $moduleScript = $moduleScript.Replace('IPPORT=<ip>:<port>',"IPPORT=$($moduleIP):$($modulePort)")
+    $moduleName = $moduleFile.name.replace(".ps1","")
+    $moduleScript > ./modules/$($moduleFile.name)
+    $modulePort++
+}
+
+$brokerScript = gc ./install/broker.ps1
+$brokerScript = $brokerScript.Replace('Broker=<ip>:<port>',"Broker=$($brokerIP):$($brokerPort)")
+$brokerScript = $brokerScript.Replace('IPPORT=<ip>:<port>',"IPPORT=$($brokerIP):$($brokerPort)")
+$brokerScript > ./modules/broker.ps1
 
 read-host Close all powershell and cmd sessions and start Argali service
 
